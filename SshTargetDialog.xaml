@@ -1,0 +1,18 @@
+<Window x:Class="SshFilePreview.SshTargetDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sambungkan ke SSH" Height="250" Width="460" MinHeight="250" MinWidth="460"
+        ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        Background="#F5F7FC" FontFamily="Segoe UI">
+  <Grid Margin="24">
+    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+    <TextBlock Text="Target SSH belum tersambung" FontSize="19" FontWeight="SemiBold" Foreground="#182238" />
+    <TextBlock Grid.Row="1" Text="Masukkan alias dari SSH config (contoh: dansaihomelab) atau user@host." TextWrapping="Wrap" Foreground="#65728A" FontSize="12" Margin="0,8,0,12" />
+    <TextBox x:Name="TargetBox" Grid.Row="2" Padding="11,8" FontSize="13" BorderBrush="#D9E0EB" BorderThickness="1" />
+    <TextBlock x:Name="ValidationMessage" Grid.Row="3" Foreground="#A4333D" FontSize="11" Margin="0,7,0,0" VerticalAlignment="Top" />
+    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+      <Button Content="Batal" IsCancel="True" MinWidth="82" Padding="12,7" Margin="0,0,8,0" />
+      <Button Content="Sambungkan" IsDefault="True" MinWidth="112" Padding="12,7" Click="Connect_Click" />
+    </StackPanel>
+  </Grid>
+</Window>
