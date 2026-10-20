@@ -1,0 +1,62 @@
+name: Windows release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build application
+        run: dotnet build .\SshFilePreview.csproj --configuration Release
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --no-progress --yes
+      - name: Build installer
+        shell: pwsh
+        run: .\build-installer.ps1
+      - name: Validate installer and checksum
+        shell: pwsh
+        run: |
+          $setup = 'installer-output\SSH-File-Preview-Setup-x64.exe'
+          $checksumFile = 'installer-output\SHA256SUMS.txt'
+          if (-not (Test-Path -LiteralPath $setup -PathType Leaf)) {
+              throw "Setup executable not found: $setup"
+          }
+          if (-not (Test-Path -LiteralPath $checksumFile -PathType Leaf)) {
+              throw "Checksum file not found: $checksumFile"
+          }
+          $expected = (Get-Content -LiteralPath $checksumFile -Raw).Trim().Split(' ')[0]
+          $actual = (Get-FileHash -LiteralPath $setup -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw 'Setup executable checksum mismatch.' }
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            installer-output/SSH-File-Preview-Setup-x64.exe
+            installer-output/SHA256SUMS.txt

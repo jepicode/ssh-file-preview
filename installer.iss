@@ -1,5 +1,7 @@
 #define AppName "SSH File Preview"
-#define AppVersion "1.0.0"
+#ifndef AppVersion
+  #define AppVersion "1.0.0"
+#endif
 #define AppPublisher "Jepi Usuluddin"
 #define AppURL "https://github.com/jepicode/ssh-file-preview"
 #define AppExeName "SshFilePreview.exe"

@@ -41,16 +41,22 @@ dotnet publish .\SshFilePreview.csproj --configuration Release --runtime win-x64
 
 Executable ada di `publish\SshFilePreview.exe`. Alternatifnya, `.\publish.ps1` menjalankan perintah publish yang sama dan memasang shortcut **SSH File Preview** di Start Menu akun Windows saat ini.
 
-## Installer wizard Windows
+## Unduh installer
 
-Build installer dari Windows setelah memasang Inno Setup 6:
+Unduh installer Windows x64 terbaru dari [GitHub Releases](https://github.com/jepicode/ssh-file-preview/releases). Setiap rilis menyediakan `SSH-File-Preview-Setup-x64.exe` dan `SHA256SUMS.txt` untuk memverifikasi unduhan. Pengguna cukup menjalankan file setup; tidak perlu PowerShell atau .NET. Windows OpenSSH Client (`ssh.exe`) tetap diperlukan untuk koneksi SSH.
+
+Rilis dibuat otomatis saat tag versi `v*` didorong ke GitHub. Workflow membangun aplikasi, membuat installer Inno Setup, memeriksa checksum, lalu melampirkan installer dan checksum ke GitHub Release. Installer tidak ditandatangani secara digital, jadi SmartScreen mungkin menampilkan peringatan.
+
+## Build installer dari source
+
+Build installer manual di Windows memerlukan .NET 10 SDK dan Inno Setup 6:
 
 ```powershell
 winget install --id JRSoftware.InnoSetup --exact
 .\build-installer.ps1
 ```
 
-File setup ada di `installer-output\SSH-File-Preview-Setup-x64.exe`. Wizard menyediakan pilihan folder pemasangan dan shortcut Start Menu, serta opsi shortcut Desktop; aplikasi bisa dihapus melalui **Settings → Apps → Installed apps**. Installer membawa .NET 10 runtime secara self-contained, jadi komputer tujuan tidak perlu memasang .NET Desktop Runtime. Windows OpenSSH Client (`ssh.exe`) tetap diperlukan untuk koneksi SSH.
+File hasil build ada di `installer-output\SSH-File-Preview-Setup-x64.exe`; checksum ada di `installer-output\SHA256SUMS.txt`. Wizard memungkinkan pemilihan folder, membuat shortcut Start Menu, menawarkan shortcut Desktop, dan mendaftarkan uninstall lewat **Settings → Apps → Installed apps**. Installer menyertakan .NET 10 runtime; OpenSSH tetap harus tersedia di komputer tujuan.
 
 Saat pertama dibuka tanpa target tersimpan, dialog meminta alias SSH (contoh `my-server`) atau `user@host`. Profil yang berhasil disimpan untuk akun Windows saat ini; gunakan selector untuk berpindah host dan **+ Host** untuk menambahkan profil. Pergantian host kembali ke folder awalnya dan mengosongkan riwayat Back. Tombol **Back** kembali ke folder yang terakhir ditinggalkan, sedangkan **Up** menuju parent directory. Klik kanan file/folder untuk menyalin path remote; menu file juga menyediakan **Download** ke lokasi yang dipilih.
 
